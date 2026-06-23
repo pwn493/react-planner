@@ -1,27 +1,36 @@
-import { useState } from 'react';
 import './App.css';
 import useTaskStore from './store/taskStore';
+import useDebugStore from './store/debugStore';
 import TaskList from './components/TaskList';
-import CreateTaskList from './components/CreateTaskList';
-import Modal from './components/Modal';
+import NewTaskList from './components/NewTaskList';
 
 function App() {
   const taskLists = useTaskStore(s => s.taskLists);
-  const addTaskList = useTaskStore(s => s.addTaskList);
-  const [isOpen, setOpen] = useState(false);
+
+  const debugRenders = useDebugStore(s => s.debugRenders);
+  const setDebugRenders = useDebugStore(s => s.setDebugRenders);
+
+  function handleDebugChange(e) {
+    setDebugRenders(e.target.checked);
+  }
 
   return (
     <div className="App">
       <h1>Planner</h1>
-      <button onClick={() => setOpen(true)}>New List</button>
-      <Modal isOpen={isOpen} onClose={() => setOpen(false)}>
-        <CreateTaskList onSubmit={name => { addTaskList(name); setOpen(false); }} />
-      </Modal>
+      <NewTaskList />
       <div className="task-lists">
         {taskLists.map(list => (
           <TaskList key={list.id} list={list} />
         ))}
       </div>
+      <label>
+        <input
+          type="checkbox"
+          checked={debugRenders}
+          onChange={handleDebugChange}
+        />
+        {' '}Debug renders
+      </label>
     </div>
   );
 }

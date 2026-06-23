@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { DebugRenders } from '@pwn493/react-debug-renders';
 import useTaskStore from '../store/taskStore';
+import useDebugStore from '../store/debugStore';
 import Task from './Task';
 import Modal from './Modal';
 import CreateTask from './CreateTask';
 
 function TaskList({ list }) {
   const addTaskToList = useTaskStore(s => s.addTaskToList);
+  const debugRenders = useDebugStore(s => s.debugRenders);
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
 
   function handleAddTask(task) {
@@ -17,7 +19,7 @@ function TaskList({ list }) {
   return (
     <div className="task-list">
       <h2>{list.name}</h2>
-      <DebugRenders />
+      <DebugRenders enabled={debugRenders} />
       {list.tasks.map(task => (
         <Task key={task.id} task={task} listId={list.id} />
       ))}
@@ -29,4 +31,4 @@ function TaskList({ list }) {
   );
 }
 
-export default TaskList;
+export default memo(TaskList);

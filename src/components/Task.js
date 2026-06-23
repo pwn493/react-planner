@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
+import { DebugRenders } from '@pwn493/react-debug-renders';
 import useTaskStore from '../store/taskStore';
+import useDebugStore from '../store/debugStore';
 import Modal from './Modal';
 
 const STATUSES = ['New', 'InProgress', 'Blocked', 'Done'];
@@ -7,12 +9,14 @@ const STATUSES = ['New', 'InProgress', 'Blocked', 'Done'];
 function Task({ task, listId }) {
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const updateTaskStatus = useTaskStore(s => s.updateTaskStatus);
+  const debugRenders = useDebugStore(s => s.debugRenders);
 
   const titleText = task.status === 'Blocked' ? `* ${task.title}` : task.title;
   const titleStyle = task.status === 'Done' ? { textDecoration: 'line-through' } : {};
 
   return (
     <div className="task">
+      <DebugRenders enabled={debugRenders} />
       <span style={titleStyle}>{titleText}</span>
       <button onClick={() => setStatusModalOpen(true)}>{task.status}</button>
       <span>Size: {task.size}</span>
@@ -37,4 +41,4 @@ function Task({ task, listId }) {
   );
 }
 
-export default Task;
+export default memo(Task);
