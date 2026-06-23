@@ -36,6 +36,8 @@ const useTaskStore = create(
             }
           )
         })),
+      deleteTaskList: (listId) =>
+        set(s => ({ taskLists: s.taskLists.filter(l => l.id !== listId) })),
     }),
     { name: 'task-store', storage: createJSONStorage(() => localStorage) }
   )

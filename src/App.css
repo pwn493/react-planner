@@ -19,6 +19,12 @@ dialog::backdrop {
   margin-bottom: 24px;
 }
 
+.delete-list-button {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+}
+
 .task {
   display: flex;
   gap: 12px;
