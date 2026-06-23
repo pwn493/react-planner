@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DebugRenders } from '@pwn493/react-debug-renders';
 import useTaskStore from '../store/taskStore';
 import Task from './Task';
 import Modal from './Modal';
@@ -16,6 +17,7 @@ function TaskList({ list }) {
   return (
     <div className="task-list">
       <h2>{list.name}</h2>
+      <DebugRenders />
       {list.tasks.map(task => (
         <Task key={task.id} task={task} listId={list.id} />
       ))}
