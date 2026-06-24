@@ -20,10 +20,8 @@ function Modal({ isOpen, onClose, children }) {
 
   return (
     <dialog ref={ref} onCancel={handleCancel}>
+      <button className="modal-close-button" onClick={onClose}>x</button>
       {children}
-      <div>
-        <button onClick={onClose}>Close</button>
-      </div>
     </dialog>
   );
 }

@@ -9,7 +9,7 @@ function NewTaskList() {
 
   return (
     <>
-      <button onClick={() => setOpen(true)}>New List</button>
+      <button className="new-list-button" onClick={() => setOpen(true)}>New List</button>
       <Modal isOpen={isOpen} onClose={() => setOpen(false)}>
         <CreateTaskList onSubmit={name => { addTaskList(name); setOpen(false); }} />
       </Modal>
