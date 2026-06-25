@@ -43,10 +43,16 @@ dialog::backdrop {
 }
 
 .task-list {
+  display: flex;
+  flex-direction: column;
   border: 1px solid #000;
   border-radius: 8px;
   padding: 12px;
   width: fit-content;
+}
+
+.add-task-button {
+  margin-top: auto;
 }
 
 .task-list h2 {
@@ -55,6 +61,11 @@ dialog::backdrop {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
+}
+
+.collapse-caret {
+  margin-right: 8px;
 }
 
 .delete-list-button {

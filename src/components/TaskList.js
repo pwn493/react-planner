@@ -12,6 +12,7 @@ function TaskList({ list }) {
   const debugRenders = useDebugStore(s => s.debugRenders);
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isCollapsed, setCollapsed] = useState(false);
 
   function handleAddTask(task) {
     addTaskToList(list.id, { title: task.title, size: task.size, energy: task.energy });
@@ -20,15 +21,25 @@ function TaskList({ list }) {
 
   return (
     <div className="task-list">
-      <h2>
+      <h2 onClick={() => setCollapsed(c => !c)}>
+        <span className="collapse-caret">{isCollapsed ? '▸' : '▾'}</span>
         {list.name}
-        <button className="delete-list-button" onClick={() => setDeleteModalOpen(true)}>x</button>
+        <button
+          className="delete-list-button"
+          onClick={(e) => { e.stopPropagation(); setDeleteModalOpen(true); }}
+        >
+          x
+        </button>
       </h2>
-      <DebugRenders enabled={debugRenders} />
-      {list.tasks.map(task => (
-        <Task key={task.id} task={task} listId={list.id} />
-      ))}
-      <button onClick={() => setCreateTaskModalOpen(true)}>+</button>
+      {!isCollapsed && (
+        <>
+          <DebugRenders enabled={debugRenders} />
+          {list.tasks.map(task => (
+            <Task key={task.id} task={task} listId={list.id} />
+          ))}
+          <button className="add-task-button" onClick={() => setCreateTaskModalOpen(true)}>+</button>
+        </>
+      )}
       <Modal isOpen={isCreateTaskModalOpen} onClose={() => setCreateTaskModalOpen(false)}>
         <CreateTask onSubmit={handleAddTask} />
       </Modal>
