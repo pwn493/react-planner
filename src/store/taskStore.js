@@ -2,6 +2,16 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
 
+function reorder(arr, fromId, toId) {
+  const fromIdx = arr.findIndex(x => x.id === fromId);
+  const toIdx = arr.findIndex(x => x.id === toId);
+  if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return null;
+  const result = [...arr];
+  const [moved] = result.splice(fromIdx, 1);
+  result.splice(toIdx, 0, moved);
+  return result;
+}
+
 export function createTask({ title, size = 0, energy = 0 }) {
   const now = new Date().toISOString();
   return { id: uuidv4(), title, status: 'New', size, energy, createdAt: now, updatedAt: now };
@@ -38,15 +48,18 @@ const useTaskStore = create(
         })),
       deleteTaskList: (listId) =>
         set(s => ({ taskLists: s.taskLists.filter(l => l.id !== listId) })),
+      reorderTasksInList: (listId, fromId, toId) =>
+        set(s => ({
+          taskLists: s.taskLists.map(l => {
+            if (l.id !== listId) return l;
+            const tasks = reorder(l.tasks, fromId, toId);
+            return tasks ? { ...l, tasks } : l;
+          })
+        })),
       reorderTaskLists: (fromId, toId) =>
         set(s => {
-          const lists = [...s.taskLists];
-          const fromIdx = lists.findIndex(l => l.id === fromId);
-          const toIdx = lists.findIndex(l => l.id === toId);
-          if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return s;
-          const [moved] = lists.splice(fromIdx, 1);
-          lists.splice(toIdx, 0, moved);
-          return { taskLists: lists };
+          const taskLists = reorder(s.taskLists, fromId, toId);
+          return taskLists ? { taskLists } : s;
         }),
     }),
     { name: 'task-store', storage: createJSONStorage(() => localStorage) }

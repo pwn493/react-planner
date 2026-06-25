@@ -5,6 +5,7 @@ import useDebugStore from '../store/debugStore';
 import Task from './Task';
 import Modal from './Modal';
 import CreateTask from './CreateTask';
+import { useDraggable } from '../hooks/useDraggable';
 
 function TaskList({ list }) {
   const addTaskToList = useTaskStore(s => s.addTaskToList);
@@ -14,33 +15,7 @@ function TaskList({ list }) {
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isCollapsed, setCollapsed] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
-
-  function handleDragStart(e) {
-    e.dataTransfer.setData('text/plain', list.id);
-    e.dataTransfer.effectAllowed = 'move';
-  }
-
-  function handleDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setIsDragOver(true);
-  }
-
-  function handleDragLeave(e) {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      setIsDragOver(false);
-    }
-  }
-
-  function handleDrop(e) {
-    e.preventDefault();
-    const fromId = e.dataTransfer.getData('text/plain');
-    if (fromId && fromId !== list.id) {
-      reorderTaskLists(fromId, list.id);
-    }
-    setIsDragOver(false);
-  }
+  const { isDragOver, dragProps } = useDraggable(list.id, reorderTaskLists);
 
   function handleAddTask(task) {
     addTaskToList(list.id, { title: task.title, size: task.size, energy: task.energy });
@@ -48,14 +23,7 @@ function TaskList({ list }) {
   }
 
   return (
-    <div
-      className={`task-list${isDragOver ? ' drag-over' : ''}`}
-      draggable
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
+    <div className={`task-list${isDragOver ? ' drag-over' : ''}`} {...dragProps}>
       <h2 onClick={() => setCollapsed(c => !c)}>
         <span className="drag-handle">⠿</span>
         <span className="collapse-caret">{isCollapsed ? '▸' : '▾'}</span>
