@@ -38,6 +38,16 @@ const useTaskStore = create(
         })),
       deleteTaskList: (listId) =>
         set(s => ({ taskLists: s.taskLists.filter(l => l.id !== listId) })),
+      reorderTaskLists: (fromId, toId) =>
+        set(s => {
+          const lists = [...s.taskLists];
+          const fromIdx = lists.findIndex(l => l.id === fromId);
+          const toIdx = lists.findIndex(l => l.id === toId);
+          if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return s;
+          const [moved] = lists.splice(fromIdx, 1);
+          lists.splice(toIdx, 0, moved);
+          return { taskLists: lists };
+        }),
     }),
     { name: 'task-store', storage: createJSONStorage(() => localStorage) }
   )

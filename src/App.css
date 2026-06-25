@@ -59,9 +59,24 @@ dialog::backdrop {
   margin-top: 0;
   padding-top: 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   cursor: pointer;
+}
+
+.drag-handle {
+  cursor: grab;
+  margin-right: 6px;
+  color: #bbb;
+  user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.task-list.drag-over {
+  outline: 2px dashed #888;
+  background-color: #f5f5f5;
 }
 
 .collapse-caret {
@@ -74,7 +89,8 @@ dialog::backdrop {
   color: red;
   font-size: 0.9rem;
   padding: 0;
-  margin-left: 8px;
+  margin-left: auto;
+  padding-left: 8px;
   cursor: pointer;
 }
 
